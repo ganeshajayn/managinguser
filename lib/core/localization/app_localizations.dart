@@ -30,6 +30,9 @@ class AppLocalizations {
       'no_email': 'No email',
       'not_provided': 'Not provided',
       'loading': 'Loading...',
+      'are_you_sure_logout': 'Are you sure you want to logout?',
+      'cancel': 'Cancel',
+      'yes': 'Yes',
     },
     'hi': {
       'app_title': 'उपयोगकर्ता प्रबंधक',
@@ -59,6 +62,9 @@ class AppLocalizations {
       'no_email': 'कोई ईमेल नहीं',
       'not_provided': 'प्रदान नहीं किया गया',
       'loading': 'लोड हो रहा है...',
+      'are_you_sure_logout': 'क्या आप वाकई लॉगआउट करना चाहते हैं?',
+      'cancel': 'रद्द करें',
+      'yes': 'हाँ',
     },
   };
 
@@ -107,6 +113,9 @@ class AppLocalizations {
   String get noEmail => getString('no_email');
   String get notProvided => getString('not_provided');
   String get loading => getString('loading');
+  String get areYouSureLogout => getString('are_you_sure_logout');
+  String get cancel => getString('cancel');
+  String get yes => getString('yes');
 }
 
 class LocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

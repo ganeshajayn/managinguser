@@ -46,3 +46,4 @@ class NetworkDataSource {
     _networkStatusController.close();
   }
 }
+

@@ -10,7 +10,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
   SplashBloc(this.authRespository) : super(SplashInitial()) {
     on<CheckAuthEvents>((event, emit) async {
       emit(Splashloading());
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 4));
       final user = authRespository.getCurrentUser();
       if (user != null) {
         emit(SplashAuthenticated());

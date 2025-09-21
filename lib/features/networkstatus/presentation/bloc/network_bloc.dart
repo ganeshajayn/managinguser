@@ -40,3 +40,4 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
     }
   }
 }
+

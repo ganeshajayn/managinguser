@@ -30,10 +30,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     context.read<UserBloc>().add(GetUsersEvent(page));
-    // Start network monitoring
+
     context.read<NetworkBloc>().add(StartNetworkMonitoring());
 
-    // Check for pending notification route
     _checkPendingNotification();
   }
 
@@ -66,7 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _changeLanguage(BuildContext context, String languageCode) {
-    // Use the language provider to change language
     Provider.of<LanguageProvider>(
       context,
       listen: false,
@@ -94,6 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (_) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Text(l10n.createUser),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -117,8 +116,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 };
                 context.read<UserBloc>().add(CreateUserEvent(data));
                 Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Added Successfully"),
+                    backgroundColor: Colors.lightGreen,
+                  ),
+                );
               },
               child: Text(l10n.save),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Cancel", style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -147,6 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (_) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Text(l10n.updateUser),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -170,6 +182,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 };
                 context.read<UserBloc>().add(UpdateUserEvent(id, data));
                 Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Updated successfully"),
+                    backgroundColor: Colors.lightGreen,
+                  ),
+                );
               },
               child: Text(l10n.update),
             ),
@@ -198,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             _isOnline = true;
           });
-          // Refresh data when connection is restored
+
           _refreshTimer?.cancel();
           _refreshTimer = Timer(const Duration(milliseconds: 500), () {
             _refreshData();
@@ -206,9 +224,11 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Text(l10n.users),
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.green,
           foregroundColor: Colors.white,
           actions: [
             PopupMenuButton<String>(
@@ -295,7 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         floatingActionButton: FloatingActionButton(
-          backgroundColor: _isOnline ? Colors.black : Colors.grey,
+          backgroundColor: _isOnline ? Colors.green : Colors.grey,
           onPressed: _isOnline ? _showCreateDialog : null,
           child: Icon(
             Icons.add,
@@ -312,44 +332,75 @@ class _HomeScreenState extends State<HomeScreen> {
     AppLocalizations l10n,
   ) {
     if (ResponsiveHelper.isMobile(context)) {
-      return Slidable(
-        key: ValueKey(user.id),
-        endActionPane: ActionPane(
-          motion: const ScrollMotion(),
-          children: [
-            SlidableAction(
-              onPressed: _isOnline
-                  ? (_) {
-                      context.read<UserBloc>().add(DeleteUserEvent(user.id));
-                    }
-                  : (_) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            '${l10n.noInternetConnection}. ${l10n.checkInternetMessage}',
-                          ),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    },
-              backgroundColor: _isOnline ? Colors.red : Colors.grey,
-              icon: Icons.delete,
-              label: l10n.delete,
+      return Column(
+        children: [
+          Card(
+            elevation: 4,
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
             ),
-          ],
-        ),
-        child: ListTile(
-          leading: CircleAvatar(backgroundImage: NetworkImage(user.avatar)),
-          title: Text("${user.firstName} ${user.lastName}"),
-          subtitle: Text(user.email),
-          trailing: IconButton(
-            icon: Icon(
-              Icons.edit,
-              color: _isOnline ? Colors.blue : Colors.grey,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Slidable(
+                key: ValueKey(user.id),
+                endActionPane: ActionPane(
+                  motion: const ScrollMotion(),
+                  children: [
+                    SlidableAction(
+                      onPressed: _isOnline
+                          ? (_) {
+                              context.read<UserBloc>().add(
+                                DeleteUserEvent(user.id),
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: Colors.lightGreen,
+                                  content: Text("Item deleted Successfully"),
+                                ),
+                              );
+                            }
+                          : (_) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    '${l10n.noInternetConnection}. ${l10n.checkInternetMessage}',
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            },
+                      backgroundColor: _isOnline ? Colors.red : Colors.grey,
+                      icon: Icons.delete,
+                      label: l10n.delete,
+                    ),
+                  ],
+                ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(user.avatar),
+                  ),
+                  title: Text("${user.firstName} ${user.lastName}"),
+                  subtitle: Text(user.email),
+                  trailing: IconButton(
+                    icon: Icon(
+                      Icons.edit,
+                      color: _isOnline ? Colors.green : Colors.grey,
+                    ),
+                    onPressed: _isOnline
+                        ? () => _showUpdateDialog(user.id)
+                        : null,
+                  ),
+                ),
+              ),
             ),
-            onPressed: _isOnline ? () => _showUpdateDialog(user.id) : null,
           ),
-        ),
+          const SizedBox(height: 4),
+        ],
       );
     } else {
       return Card(
@@ -391,10 +442,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: _isOnline
                         ? () => _showUpdateDialog(user.id)
                         : null,
-                    icon: Icon(
-                      Icons.edit,
-                      color: _isOnline ? Colors.blue : Colors.grey,
-                    ),
+                    icon: Icon(Icons.edit, color: Colors.blue),
                     tooltip: l10n.edit,
                   ),
                   IconButton(

@@ -4,3 +4,4 @@ abstract class NetworkRepository {
   void startMonitoring();
   void stopMonitoring();
 }
+

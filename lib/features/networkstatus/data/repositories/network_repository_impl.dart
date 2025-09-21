@@ -18,3 +18,4 @@ class NetworkRepositoryImpl implements NetworkRepository {
   @override
   void stopMonitoring() => _dataSource.stopMonitoring();
 }
+

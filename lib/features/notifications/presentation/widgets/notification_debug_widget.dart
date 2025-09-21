@@ -42,8 +42,6 @@ class _NotificationDebugWidgetState extends State<NotificationDebugWidget> {
 
   Future<void> _testNotification() async {
     try {
-      // This would typically be sent from a server
-      // For testing, we'll show a local notification
       await NotificationService().showLocalNotification(
         RemoteMessage(
           notification: const RemoteNotification(
@@ -60,67 +58,71 @@ class _NotificationDebugWidgetState extends State<NotificationDebugWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.all(16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Push Notifications Debug',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            if (_isLoading)
-              const Center(child: CircularProgressIndicator())
-            else ...[
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Card(
+        margin: EdgeInsets.zero, // already padded by SingleChildScrollView
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               Text(
-                'FCM Token:',
+                'Push Notifications Debug',
                 style: Theme.of(
                   context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey[300]!),
-                ),
-                child: Text(
-                  _fcmToken ?? 'No token available',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                ),
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: _getFCMToken,
-                    icon: const Icon(Icons.refresh),
-                    label: const Text('Refresh Token'),
+              if (_isLoading)
+                const Center(child: CircularProgressIndicator())
+              else ...[
+                Text(
+                  'FCM Token:',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
-                  const SizedBox(width: 12),
-                  ElevatedButton.icon(
-                    onPressed: _testNotification,
-                    icon: const Icon(Icons.notifications),
-                    label: const Text('Test Notification'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey[300]!),
+                  ),
+                  child: SelectableText(
+                    _fcmToken ?? 'No token available',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: _getFCMToken,
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Refresh Token'),
                     ),
-                  ),
-                ],
-              ),
+                    ElevatedButton.icon(
+                      onPressed: _testNotification,
+                      icon: const Icon(Icons.notifications),
+                      label: const Text('Test Notification'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

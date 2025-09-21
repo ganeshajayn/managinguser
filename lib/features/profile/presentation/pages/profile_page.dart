@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:machinetest/features/notifications/presentation/pages/notificationpages.dart';
 import 'package:provider/provider.dart';
 import 'package:machinetest/core/database/db_helper.dart';
 import 'package:machinetest/features/auth/data/respositories/auth_respository.dart';
 import 'package:machinetest/core/localization/app_localizations.dart';
 import 'package:machinetest/core/providers/language_provider.dart';
 import 'package:machinetest/core/utils/responsive_helper.dart';
-import 'package:machinetest/features/notifications/presentation/widgets/notification_debug_widget.dart';
+
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -36,7 +37,6 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _changeLanguage(BuildContext context, String languageCode) {
-    // Use the language provider to change language
     Provider.of<LanguageProvider>(
       context,
       listen: false,
@@ -44,14 +44,45 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _signOut() async {
-    try {
-      await _authRepository.signOut();
-      Navigator.pushReplacementNamed(context, '/login');
-    } catch (e) {
-      final l10n = AppLocalizations.of(context);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('${l10n.signOutFailed}: $e')));
+    final l10n = AppLocalizations.of(context);
+
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(l10n.signOut),
+          content: Text(l10n.areYouSureLogout),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+              child: Text(
+                l10n.cancel,
+                style: const TextStyle(color: Colors.grey),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: Text(l10n.yes, style: const TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldLogout == true) {
+      try {
+        await _authRepository.signOut();
+        Navigator.pushReplacementNamed(context, '/login');
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('${l10n.signOutFailed}: $e')));
+      }
     }
   }
 
@@ -62,7 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.profile),
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.green,
         foregroundColor: Colors.white,
         actions: [
           PopupMenuButton<String>(
@@ -93,7 +124,15 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ],
           ),
-          IconButton(icon: const Icon(Icons.logout), onPressed: _signOut),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Notificationpages()),
+              );
+            },
+            icon: Icon(Icons.notifications),
+          ),
         ],
       ),
       body: _userProfile == null
@@ -167,8 +206,8 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
         const SizedBox(height: 32),
-        const NotificationDebugWidget(),
-        const SizedBox(height: 32),
+        // const NotificationDebugWidget(),
+        const SizedBox(height: 24),
         SizedBox(
           width: double.infinity,
           child: ElevatedButton.icon(
@@ -250,7 +289,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             const SizedBox(height: 48),
-            const NotificationDebugWidget(),
+            //  const NotificationDebugWidget(),
             const SizedBox(height: 48),
             SizedBox(
               width: double.infinity,

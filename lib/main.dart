@@ -22,7 +22,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  // Initialize notification service
   await NotificationService().initialize();
 
   final userRemoteDataSource = UserRemoteDataSource();
@@ -60,7 +59,7 @@ class MyApp extends StatelessWidget {
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
-              title: 'User Manager',
+              title: 'User Hub',
               localizationsDelegates: const [
                 LocalizationDelegate(),
                 GlobalMaterialLocalizations.delegate,

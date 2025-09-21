@@ -15,37 +15,28 @@ class NoNetworkPage extends StatefulWidget {
 }
 
 class _NoNetworkPageState extends State<NoNetworkPage> {
+  late final NetworkBloc _networkBloc;
   Timer? _navigationTimer;
   bool _isNavigating = false;
-  bool _hasNavigated = false;
 
   @override
   void initState() {
     super.initState();
-    // Start monitoring network status
-    context.read<NetworkBloc>().add(StartNetworkMonitoring());
+    _networkBloc = context.read<NetworkBloc>();
+    // Start monitoring network connectivity
+    _networkBloc.add(StartNetworkMonitoring());
   }
 
   @override
   void dispose() {
     _navigationTimer?.cancel();
-    context.read<NetworkBloc>().add(StopNetworkMonitoring());
+    _networkBloc.add(StopNetworkMonitoring());
     super.dispose();
   }
 
   void _navigateToHome() {
-    if (mounted && context.mounted) {
-      try {
-        Navigator.pushReplacementNamed(context, '/home');
-      } catch (e) {
-        print('Navigation error: $e');
-        // Fallback: try to pop and push
-        try {
-          Navigator.pop(context);
-        } catch (e2) {
-          print('Fallback navigation error: $e2');
-        }
-      }
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, '/home');
     }
   }
 
@@ -57,17 +48,12 @@ class _NoNetworkPageState extends State<NoNetworkPage> {
       backgroundColor: Colors.grey[100],
       body: BlocListener<NetworkBloc, NetworkState>(
         listener: (context, state) {
-          if (state is NetworkConnected &&
-              mounted &&
-              !_isNavigating &&
-              !_hasNavigated) {
+          if (state is NetworkConnected && !_isNavigating) {
             _isNavigating = true;
-            _hasNavigated = true;
-            setState(() {}); // Update UI to show "Connection restored" message
 
-            // Add a small delay to ensure smooth transition
-            _navigationTimer = Timer(const Duration(milliseconds: 1000), () {
-              _navigateToHome();
+            // Wait 1 second before navigating to Home
+            _navigationTimer = Timer(const Duration(seconds: 1), () {
+              if (mounted) _navigateToHome();
             });
           }
         },
@@ -106,7 +92,9 @@ class _NoNetworkPageState extends State<NoNetworkPage> {
           ),
           const SizedBox(height: 48),
           CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue[600]!),
+            valueColor: AlwaysStoppedAnimation<Color>(
+              _isNavigating ? Colors.green[600]! : Colors.blue[600]!,
+            ),
           ),
           const SizedBox(height: 16),
           Text(
