@@ -23,7 +23,7 @@ class _NoNetworkPageState extends State<NoNetworkPage> {
   void initState() {
     super.initState();
     _networkBloc = context.read<NetworkBloc>();
-    // Start monitoring network connectivity
+
     _networkBloc.add(StartNetworkMonitoring());
   }
 
@@ -51,7 +51,6 @@ class _NoNetworkPageState extends State<NoNetworkPage> {
           if (state is NetworkConnected && !_isNavigating) {
             _isNavigating = true;
 
-            // Wait 1 second before navigating to Home
             _navigationTimer = Timer(const Duration(seconds: 1), () {
               if (mounted) _navigateToHome();
             });

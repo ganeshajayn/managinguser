@@ -62,7 +62,7 @@ class NotificationService {
       onDidReceiveNotificationResponse: _onNotificationTapped,
     );
 
-    // Create notification channel for Android
+    // Create notification channel for, Android
     await _createNotificationChannel();
   }
 
@@ -84,7 +84,7 @@ class NotificationService {
   }
 
   Future<void> _configureFirebaseMessaging() async {
-    // Handle background messages
+    // Handle backgroundmessages
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
     // Handle foreground messages
@@ -93,7 +93,7 @@ class NotificationService {
     // Handle notification taps when app is in background/terminated
     FirebaseMessaging.onMessageOpenedApp.listen(_handleNotificationTap);
 
-    // Handle notification tap when app is terminated
+    // Handle notification tap
     final RemoteMessage? initialMessage = await _firebaseMessaging
         .getInitialMessage();
     if (initialMessage != null) {
@@ -114,7 +114,6 @@ class NotificationService {
     // Navigate based on notification data
     final String? route = message.data['route'];
     if (route != null) {
-      // Store the route to navigate to when app is ready
       _pendingRoute = route;
     }
   }
@@ -197,7 +196,6 @@ class NotificationService {
   }
 }
 
-// Background message handler (must be top-level function)
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('Handling background message: ${message.notification?.title}');

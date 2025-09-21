@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:machinetest/core/services/notification_service.dart';
-import 'package:machinetest/core/localization/app_localizations.dart';
 
 class NotificationDebugWidget extends StatefulWidget {
   const NotificationDebugWidget({super.key});
@@ -61,7 +60,7 @@ class _NotificationDebugWidgetState extends State<NotificationDebugWidget> {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Card(
-        margin: EdgeInsets.zero, // already padded by SingleChildScrollView
+        margin: EdgeInsets.zero,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(

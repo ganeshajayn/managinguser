@@ -15,7 +15,6 @@ class UserRemoteDataSource {
         print('Get users response: ${data['data'].length} users found');
         print('API Response: ${response.body}');
 
-        // Convert ReqRes format to our UserModel format
         return (data['data'] as List)
             .map(
               (json) => UserModel(
@@ -30,12 +29,12 @@ class UserRemoteDataSource {
       } else {
         print('Get users failed with status: ${response.statusCode}');
         print('Response body: ${response.body}');
-        // Fall back to mock data if API fails
+
         return _generateMockUsers(page);
       }
     } catch (e) {
       print('Get users error: $e');
-      // Fall back to mock data if API fails
+
       return _generateMockUsers(page);
     }
   }
@@ -72,12 +71,12 @@ class UserRemoteDataSource {
         );
       } else {
         print('Get user failed with status: ${response.statusCode}');
-        // Fall back to mock data
+
         return _generateMockUser(id);
       }
     } catch (e) {
       print('Get user error: $e');
-      // Fall back to mock data
+
       return _generateMockUser(id);
     }
   }
@@ -102,7 +101,6 @@ class UserRemoteDataSource {
         final data = jsonDecode(response.body);
         print('Create user response: User created successfully');
 
-        // ReqRes API returns limited data for created users, so we'll enhance it
         final newId = DateTime.now().millisecondsSinceEpoch;
         return UserModel(
           id: newId,
@@ -115,12 +113,12 @@ class UserRemoteDataSource {
       } else {
         print('Create user failed with status: ${response.statusCode}');
         print('Response body: ${response.body}');
-        // Fall back to mock data
+
         return _generateMockUserFromData(userData);
       }
     } catch (e) {
       print('Create user error: $e');
-      // Fall back to mock data
+
       return _generateMockUserFromData(userData);
     }
   }
@@ -149,7 +147,6 @@ class UserRemoteDataSource {
         final data = jsonDecode(response.body);
         print('Update user response: User updated successfully');
 
-        // ReqRes API returns limited data for updated users, so we'll enhance it
         return UserModel(
           id: id,
           email:
@@ -161,12 +158,12 @@ class UserRemoteDataSource {
       } else {
         print('Update user failed with status: ${response.statusCode}');
         print('Response body: ${response.body}');
-        // Fall back to mock data
+
         return _generateMockUserFromDataForUpdate(userData, id);
       }
     } catch (e) {
       print('Update user error: $e');
-      // Fall back to mock data
+
       return _generateMockUserFromDataForUpdate(userData, id);
     }
   }
@@ -200,12 +197,12 @@ class UserRemoteDataSource {
       } else {
         print('Delete user failed with status: ${response.statusCode}');
         print('Response body: ${response.body}');
-        // For demo purposes, we'll consider delete successful even if API fails
+
         print('Continuing with delete operation for demo purposes');
       }
     } catch (e) {
       print('Delete user error: $e');
-      // For demo purposes, we'll consider delete successful even if API fails
+
       print('Continuing with delete operation for demo purposes');
     }
   }

@@ -270,7 +270,7 @@ class _HomeScreenState extends State<HomeScreen> {
             if (state is UserCreated ||
                 state is UserUpdated ||
                 state is UserDeleted) {
-              context.read<UserBloc>().add(GetUsersEvent(page)); // refresh list
+              context.read<UserBloc>().add(GetUsersEvent(page));
             }
             if (state is UserError) {
               ScaffoldMessenger.of(context).showSnackBar(

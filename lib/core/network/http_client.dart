@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class HttpClient {
   static const String baseUrl = "https://reqres.in/api/";
-  static const String apiKey = "reqres-free-v1"; // Free API key from ReqRes
+  static const String apiKey = "reqres-free-v1";
   static const Map<String, String> headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',

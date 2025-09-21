@@ -10,7 +10,7 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<List<UserEntity>> getUsers(int page) async {
     final models = await remoteDataSource.getUsers(page);
-    return models; // ✅ already UserEntity because UserModel extends UserEntity
+    return models;
   }
 
   @override
